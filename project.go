@@ -8,10 +8,11 @@ import (
 )
 
 type Project struct {
-	Root   string   `json:"root"`
-	Bucket string   `json:"bucket"`
-	Prefix string   `json:"prefix"`
-	Ignore []string `json:"ignore"`
+	Root      string   `json:"root"`
+	Bucket    string   `json:"bucket"`
+	Prefix    string   `json:"prefix"`
+	OlderThan string   `json:"olderThan"`
+	Ignore    []string `json:"ignore"`
 }
 
 func LoadProject(path string) (*Project, error) {

@@ -7,25 +7,36 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/rickb777/date/period"
 	ignore "github.com/sabhiram/go-gitignore"
 )
 
 type Session struct {
-	Project  *Project
-	S3       *s3.Client
-	Uploader *manager.Uploader
-	Ignore   *ignore.GitIgnore
+	Project   *Project
+	S3        *s3.Client
+	Uploader  *manager.Uploader
+	OlderThan time.Duration
+	Ignore    *ignore.GitIgnore
 }
 
 func NewSession(p *Project) (*Session, error) {
 	s := &Session{
 		Project: p,
+	}
+
+	if len(p.OlderThan) != 0 {
+		p, err := period.Parse(p.OlderThan)
+		if err != nil {
+			return nil, err
+		}
+		s.OlderThan = p.DurationApprox()
 	}
 
 	cfg, err := config.LoadDefaultConfig(context.TODO())
@@ -85,8 +96,8 @@ func (s *Session) backup(file string, info fs.FileInfo) error {
 		return nil
 	}
 
-	duration := startedAt.Sub(info.ModTime())
-	if duration.Hours() < 24*7 {
+	age := startedAt.Sub(info.ModTime())
+	if age <= s.OlderThan {
 		log.Printf("skipping %s: too young", file)
 		return nil
 	}
