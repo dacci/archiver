@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io/fs"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"time"
@@ -98,7 +98,9 @@ func (s *Session) backup(file string, info fs.FileInfo) error {
 
 	age := startedAt.Sub(info.ModTime())
 	if age <= s.OlderThan {
-		log.Printf("skipping %s: too young", file)
+		if verbose {
+			fmt.Printf("skipping %s: too young", file)
+		}
 		return nil
 	}
 
@@ -108,11 +110,13 @@ func (s *Session) backup(file string, info fs.FileInfo) error {
 		Key:    aws.String(key),
 	})
 	if err == nil && !info.ModTime().After(*res.LastModified) {
-		log.Printf("skipping %s: not modified", file)
+		if verbose {
+			fmt.Printf("skipping %s: not modified", file)
+		}
 		return nil
 	}
 
-	log.Printf("uploading %s", file)
+	fmt.Printf("uploading %s", file)
 
 	f, err := os.Open(path.Join(s.Project.Root, file))
 	if err != nil {
