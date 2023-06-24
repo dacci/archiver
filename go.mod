@@ -10,4 +10,5 @@ require (
 	github.com/goccy/go-yaml v1.9.8
 	github.com/rickb777/date v1.20.1
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
+	golang.org/x/text v0.10.0 // indirect
 )

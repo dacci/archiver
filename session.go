@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"golang.org/x/text/unicode/norm"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -104,7 +105,7 @@ func (s *Session) backup(file string, info fs.FileInfo) error {
 		return nil
 	}
 
-	key := path.Join(s.Project.Prefix, file)
+	key := norm.NFC.String(path.Join(s.Project.Prefix, file))
 	res, err := s.S3.HeadObject(context.TODO(), &s3.HeadObjectInput{
 		Bucket: aws.String(s.Project.Bucket),
 		Key:    aws.String(key),
