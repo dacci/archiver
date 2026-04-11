@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"golang.org/x/text/unicode/norm"
 	"io/fs"
 	"io/ioutil"
 	"os"
 	"path"
 	"time"
+
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -129,10 +130,10 @@ func (s *Session) backup(file string, info fs.FileInfo) error {
 		Bucket:        aws.String(s.Project.Bucket),
 		Key:           aws.String(key),
 		Body:          f,
-		ContentLength: info.Size(),
+		ContentLength: aws.Int64(info.Size()),
 		StorageClass:  types.StorageClassDeepArchive,
 	}
-	if req.ContentLength < 100*1024*1024 {
+	if *req.ContentLength < 100*1024*1024 {
 		_, err = s.S3.PutObject(context.TODO(), req)
 	} else {
 		_, err = s.Uploader.Upload(context.TODO(), req)
