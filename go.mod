@@ -10,7 +10,7 @@ require (
 	github.com/goccy/go-yaml v1.19.2
 	github.com/rickb777/date v1.22.0
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
-	golang.org/x/text v0.36.0
+	golang.org/x/text v0.37.0
 )
 
 require (
@@ -32,5 +32,5 @@ require (
 	github.com/aws/smithy-go v1.24.3 // indirect
 	github.com/rickb777/plural v1.4.10 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
-	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 )
